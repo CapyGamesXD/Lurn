@@ -1,20 +1,92 @@
+:root {
+	--bg: white;
+	--text: black;
+	--inputbg: rgb(48, 48, 48);
+	--glassbg: rgba(143, 143, 143, 0.3);
+	--tableborder: rgb(93, 93, 93);
+}
+
+.dark {
+	--bg: #2f2f2f;
+	--text: white;
+	--inputbg: #525252;
+	--glassbg: rgba(122, 122, 122, 0.3);
+}
+
+a {
+	color: rgb(240, 137, 129);
+}
 * {
 	margin: 0;
 }
 
+table {
+	border-collapse: collapse;
+	width: auto;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	margin-top: 2vh;
+	margin-bottom: 2vh;
+	border-collapse: separate;
+	border: solid var(--tableborder) 3px;
+	border-radius: 6px;
+	width: clamp(20rem, 50vw, 60rem);
+	border-spacing: 0;
+}
+th,
+td {
+	border-left: solid var(--tableborder) 2px;
+	border-top: solid var(--tableborder) 2px;
+	width: clamp(20rem, 50vw, 60rem);
+	text-align: center;
+}
+
+th {
+	font-size: clamp(1rem, 2vw, 3em);
+	text-align: center;
+	border-top: none;
+}
+td:first-child,
+th:first-child {
+	border-left: none;
+}
+
+hr {
+	margin: 10px auto;
+
+	width: clamp(10rem, 20vw, 25rem);
+	border-radius: 10px;
+	outline: none;
+	border: none;
+
+	height: 3px;
+	background-color: rgb(175, 175, 175);
+	border-radius: 30px;
+}
+ul {
+	margin: 0 auto;
+	list-style-position: inside;
+}
+
 body {
-	font-family: 'Playfair Display', serif;
+	font-family: 'Montserrat', sans-serif;
 	font-weight: 500;
 	text-align: center;
-	width: 100%;
-	overflow-x: hidden;
-	width: 100%;
+
+	background-color: var(--bg);
+	color: var(--text);
 	margin: 0;
 	padding: 0;
+	overflow: auto;
 }
 
 .fullcenterdiv {
 	display: flex;
+
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
@@ -24,6 +96,7 @@ body {
 }
 
 .centerdiv {
+	background-color: var(--bg);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -39,17 +112,19 @@ h1 {
 
 p {
 	font-size: clamp(1rem, 1.5vw, 2rem);
-	padding-left: 5vw;
-	padding-right: 5vw;
-	max-width: clamp(20rem, 60vw, 80rem);
+
+	overflow-wrap: break-word;
+	word-break: break-word;
+	max-width: 70vw;
+	color: var(--text);
 }
 
 input {
 	outline: none;
 	border: none;
-	background-color: rgb(48, 48, 48);
+	background-color: var(--inputbg);
 	color: white;
-	font-family: 'Playfair Display', serif;
+	font-family: 'Montserrat', sans-serif;
 	font-size: clamp(1rem, 1.5vw, 2rem);
 	width: clamp(10rem, 20vw, 30rem);
 	text-align: center;
@@ -64,7 +139,7 @@ button {
 	border: none;
 	background-color: rgb(240, 137, 129);
 	color: white;
-	font-family: 'Playfair Display', serif;
+	font-family: 'Montserrat', sans-serif;
 	font-size: clamp(1rem, 1.5vw, 2rem);
 	width: clamp(10rem, 20vw, 30rem);
 	text-align: center;
@@ -109,18 +184,40 @@ button {
 
 h2 {
 	font-size: clamp(1.5rem, 2vw, 3rem);
-	font-weight: 500;
+	font-weight: 700;
 }
 
 .messages {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+
 	flex-direction: column;
 	gap: 2vh;
 	margin-top: 10vh;
+	padding-bottom: 7vh;
+	max-width: clamp(40rem, 50vw, 60rem);
+}
 
-	padding-bottom: 15vh;
+code {
+	margin: 20px auto;
+	padding-left: 20px;
+	font-family: 'Montserrat', sans-serif;
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
+	display: block;
+	text-align: left;
+	background-color: #3f3f3f;
+	color: white;
+	border-radius: 30px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	max-width: 25vw;
+}
+
+pre {
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
+	max-width: 80vw;
 }
 
 .top {
@@ -134,7 +231,7 @@ h2 {
 }
 
 .glass {
-	background: rgba(177, 177, 177, 0.368);
+	background: var(--glassbg);
 	border-radius: 30px;
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(3px);
@@ -155,7 +252,7 @@ h2 {
 	font-size: 2vw;
 
 	text-decoration: none;
-	color: #000;
+	color: var(--text);
 }
 
 #confirm {
@@ -169,10 +266,10 @@ h2 {
 	background: rgba(177, 177, 177, 0.368);
 	border-radius: 16px;
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(10.3px);
 	inset: 0;
-
+	max-width: 70vw;
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
@@ -182,6 +279,7 @@ h2 {
 
 #restart {
 	display: none;
+	transition: margin 0.3s;
 }
 
 #restart:popover-open {
@@ -191,10 +289,10 @@ h2 {
 	background: rgba(177, 177, 177, 0.368);
 	border-radius: 16px;
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(10.3px);
 	inset: 0;
-
+	max-width: 70vw;
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
@@ -224,4 +322,8 @@ h2 {
 	justify-content: center;
 	flex-direction: row;
 	gap: 10px;
+}
+
+.scrollDiv {
+	height: 5vh;
 }
