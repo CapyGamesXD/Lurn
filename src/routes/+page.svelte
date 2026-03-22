@@ -1,10 +1,12 @@
 <script>
 	//@ts-nocheck
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { marked } from 'marked';
 	import markedKatex from 'marked-katex-extension';
 	import { json } from '@sveltejs/kit';
+	import hljs from 'highlight.js';
+	import 'highlight.js/styles/stackoverflow-dark.css';
 
 	let user = $state('');
 	let messages = $state([]);
@@ -12,9 +14,11 @@
 	let input = $state('');
 	let question = $state('');
 
+	let scrollDiv = $state();
+	let darkMode = $state(false);
 	onMount(() => {
 		user = localStorage.getItem('username') || '';
-
+		darkMode = localStorage.getItem('dark') || false;
 		if (user == '') {
 			goto('/welcome');
 		}
@@ -24,6 +28,9 @@
 		nonStandard: true
 	};
 
+	const theySeeMeScrolling = () => {
+		scrollDiv?.scrollIntoView({ behavior: 'smooth' });
+	};
 	marked.use(markedKatex(options));
 
 	async function send() {
@@ -46,6 +53,7 @@
 			question = '';
 			const data = await response.json();
 			let reply = data.reply;
+
 			try {
 				question = JSON.parse(reply);
 				console.log(question);
@@ -60,6 +68,9 @@
 					messages.shift();
 					messages = [...messages, { role: 'assistant', content: reply }];
 				}
+				await tick();
+				theySeeMeScrolling();
+				hljs.highlightAll();
 			}
 		}
 	}
@@ -72,6 +83,15 @@
 		localStorage.clear();
 		goto('/welcome');
 	}
+
+	function toggle() {
+		darkMode = !darkMode;
+		localStorage.setItem('dark', darkMode);
+		console.log('toggled!');
+	}
+	$effect(() => {
+		document.body.classList.toggle('dark', darkMode);
+	});
 </script>
 
 <link
@@ -80,25 +100,27 @@
 	integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
 	crossorigin="anonymous"
 />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+	href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap"
 	rel="stylesheet"
 />
-<div class="centerdiv">
+
+<div class="centerdiv" class:dark={darkMode}>
 	<div id="confirm" popover>
 		<p>Are you sure you want to delete this chat?</p>
 		<div class="divider"></div>
-		<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
 		<button popovertarget="confirm" popovertargetaction="hide" onclick={clear}>Delete</button>
+		<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
 	</div>
 
 	<div id="restart" popover>
 		<p>Are you sure you want to restart setup?</p>
 		<div class="divider"></div>
-		<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
 		<button popovertarget="restart" popovertargetaction="hide" onclick={restart}>Restart</button>
+		<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
 	</div>
 
 	<div class="glass">
@@ -135,6 +157,24 @@
 				/></svg
 			></button
 		>
+
+		<button class="simple" onclick={toggle} aria-label="Dark mode toggle"
+			><svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="lucide lucide-moon-icon lucide-moon"
+				><path
+					d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+				/></svg
+			></button
+		>
 	</div>
 
 	{#if messages.length == 0}
@@ -156,6 +196,8 @@
 				{/if}
 			{/each}
 		</div>
+
+		<div class="scrollDiv" bind:this={scrollDiv}></div>
 	{/if}
 	{#if question != ''}
 		<div class="fullcenterdiv">
