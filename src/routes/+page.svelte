@@ -10,7 +10,6 @@
 
 	let user = $state('');
 	let messages = $state([]);
-
 	let input = $state('');
 	let question = $state('');
 
@@ -18,7 +17,8 @@
 	let darkMode = $state(false);
 	onMount(() => {
 		user = localStorage.getItem('username') || '';
-		darkMode = localStorage.getItem('dark') || false;
+		darkMode = localStorage.getItem('dark') === 'true';
+		console.log(darkMode);
 		if (user == '') {
 			goto('/welcome');
 		}
@@ -35,7 +35,7 @@
 
 	async function send() {
 		if (input) {
-			if (messages.length <= 4) {
+			if (messages.length <= 10) {
 				messages = [...messages, { role: 'user', content: input }];
 			} else {
 				messages.shift();
@@ -91,8 +91,19 @@
 	}
 	$effect(() => {
 		document.body.classList.toggle('dark', darkMode);
+		localStorage.setItem('dark', darkMode);
+		console.log('Stored as', localStorage.getItem('dark'));
 	});
 </script>
+
+<!--This documentElement was courtesy of Claude. -->
+<svelte:head>
+	<script>
+		if (localStorage.getItem('dark') === 'true') {
+			document.documentElement.classList.toggle('dark');
+		}
+	</script>
+</svelte:head>
 
 <link
 	rel="stylesheet"
@@ -104,22 +115,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+	href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
 	rel="stylesheet"
 />
 
-<div class="centerdiv" class:dark={darkMode}>
+<div class="centerdiv">
 	<div id="confirm" popover>
 		<p>Are you sure you want to delete this chat?</p>
 		<div class="divider"></div>
-		<button popovertarget="confirm" popovertargetaction="hide" onclick={clear}>Delete</button>
+		<button popovertarget="confirm" popovertargetaction="hide" onclick={clear} class="scaryButton"
+			>Delete</button
+		>
 		<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
 	</div>
 
 	<div id="restart" popover>
 		<p>Are you sure you want to restart setup?</p>
 		<div class="divider"></div>
-		<button popovertarget="restart" popovertargetaction="hide" onclick={restart}>Restart</button>
+		<button popovertarget="restart" popovertargetaction="hide" onclick={restart} class="scaryButton"
+			>Restart</button
+		>
 		<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
 	</div>
 
@@ -220,12 +235,13 @@
 
 	{#if question == ''}
 		<div class="bottom">
-			<input
+			<textarea
 				class="userInput"
 				placeholder="Teach me about capybaras!"
 				bind:value={input}
-				onkeydown={(e) => e.key === 'Enter' && send()}
-			/>
+				onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
+			></textarea>
+
 			<button class="plus" aria-label="Send Button" onclick={send}></button>
 		</div>
 	{/if}
