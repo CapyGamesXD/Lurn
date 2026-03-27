@@ -15,10 +15,17 @@
 
 	let scrollDiv = $state();
 	let darkMode = $state(false);
+	let temp = $state(Number(0.6));
+	let model = $state('');
+	let image = $state('');
+	let imageQuery = $state('');
 	onMount(() => {
+		temp = localStorage.getItem('temp') || 0.6;
+		console.log('The temperature is currently:', temp);
 		user = localStorage.getItem('username') || '';
 		darkMode = localStorage.getItem('dark') === 'true';
-		console.log(darkMode);
+		model = localStorage.getItem('model') || 'openai/gpt-oss-120b';
+
 		if (user == '') {
 			goto('/welcome');
 		}
@@ -33,6 +40,19 @@
 	};
 	marked.use(markedKatex(options));
 
+	async function fetchImage(search) {
+		const response = await fetch('/images', {
+			method: 'POST',
+			body: JSON.stringify({ imageQuery }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const data = await response.json();
+		image = data.image;
+		console.log('image URL is:', image);
+	}
+
 	async function send() {
 		if (input) {
 			if (messages.length <= 10) {
@@ -42,23 +62,36 @@
 				messages = [...messages, { role: 'user', content: input }];
 			}
 
+			await tick();
+			theySeeMeScrolling();
+			hljs.highlightAll();
+
 			const response = await fetch('/API', {
 				method: 'POST',
-				body: JSON.stringify({ messages, user }),
+				body: JSON.stringify({ messages, user, temp, model }),
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			});
 			input = '';
 			question = '';
+			image = '';
 			const data = await response.json();
 			let reply = data.reply;
+			console.log(reply);
 
 			try {
-				question = JSON.parse(reply);
-				console.log(question);
-
-				messages = [...messages, { role: 'assistant', content: question.question }];
+				const parsed = JSON.parse(reply);
+				if (parsed.question) {
+					question = parsed.question;
+					messages = [...messages, { role: 'assistant', content: `Question: ${question}` }];
+					console.log(reply);
+				} else if (parsed.image) {
+					imageQuery = parsed.image;
+					messages = [...messages, { role: 'assistant', content: `Image,  ${imageQuery}` }];
+					await fetchImage(imageQuery);
+					console.log(reply);
+				}
 			} catch {
 				console.log('No question!');
 				reply = reply.split('{"question"')[0].trim();
@@ -71,12 +104,16 @@
 				await tick();
 				theySeeMeScrolling();
 				hljs.highlightAll();
+				console.log(reply);
 			}
 		}
 	}
 
 	function clear() {
 		messages = [];
+		input = '';
+		question = '';
+		image = '';
 	}
 
 	function restart() {
@@ -87,12 +124,11 @@
 	function toggle() {
 		darkMode = !darkMode;
 		localStorage.setItem('dark', darkMode);
-		console.log('toggled!');
 	}
 	$effect(() => {
+		document.documentElement.classList.toggle('dark', darkMode);
 		document.body.classList.toggle('dark', darkMode);
 		localStorage.setItem('dark', darkMode);
-		console.log('Stored as', localStorage.getItem('dark'));
 	});
 </script>
 
@@ -190,16 +226,34 @@
 				/></svg
 			></button
 		>
+
+		<a class="simple" aria-label="Settings Button" href="/settings"
+			><svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="lucide lucide-settings-icon lucide-settings"
+				><path
+					d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+				/><circle cx="12" cy="12" r="3" /></svg
+			></a
+		>
 	</div>
 
-	{#if messages.length == 0}
+	{#if messages.length == 0 && image == ''}
 		<div class="fullcenterdiv">
-			<h1>Welcome back, {user}</h1>
+			<h1 class="fadeText">Welcome back, {user}</h1>
 			<div class="divider"></div>
 
-			<p>Ready to dive in?</p>
+			<p class="fadeText">Ready to dive in?</p>
 		</div>
-	{:else if question == ''}
+	{:else if question == '' && image == ''}
 		<div class="messages">
 			{#each messages as msgs}
 				{#if msgs.role == 'user'}
@@ -214,11 +268,11 @@
 
 		<div class="scrollDiv" bind:this={scrollDiv}></div>
 	{/if}
-	{#if question != ''}
+	{#if question != '' && image == ''}
 		<div class="fullcenterdiv">
 			<div class="question">
 				<h2>Question:</h2>
-				<p>{@html marked(question.question)}</p>
+				<p>{@html marked(question)}</p>
 				<div class="divider"></div>
 				<div class="row">
 					<input
@@ -233,6 +287,12 @@
 		</div>
 	{/if}
 
+	{#if image != ''}
+		<div class="messages">
+			<img src={image} alt="AI selected photo" />
+		</div>
+	{/if}
+
 	{#if question == ''}
 		<div class="bottom">
 			<textarea
@@ -242,7 +302,21 @@
 				onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
 			></textarea>
 
-			<button class="plus" aria-label="Send Button" onclick={send}></button>
+			<button class="plus" aria-label="Send Button" onclick={send}>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-arrow-up-icon lucide-arrow-up"
+					><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg
+				></button
+			>
 		</div>
 	{/if}
 </div>
