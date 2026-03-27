@@ -16,6 +16,8 @@
 
 a {
 	color: rgb(240, 137, 129);
+	margin: 0 auto;
+	padding: 0;
 }
 * {
 	margin: 0;
@@ -135,8 +137,6 @@ body {
 	}
 }
 h1 {
-	animation: fadeIn 1s ease-in;
-
 	font-size: clamp(2rem, 4vw, 6rem);
 	font-weight: 500;
 }
@@ -146,14 +146,47 @@ h1 {
 	}
 }
 
+.fadeText {
+	animation: fadeIn 0.5s ease-in-out;
+}
 p {
-	animation: fadeIn 1s ease-in;
+	transition: opacity 0.3s;
+	opacity: 1;
 	font-size: clamp(1rem, 1.5vw, 2rem);
-
 	overflow-wrap: break-word;
 	word-break: break-word;
 	max-width: 70vw;
 	color: var(--text);
+}
+
+@starting-style {
+	p {
+		opacity: 0;
+	}
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 15px;
+	height: 15px;
+	background: rgb(240, 137, 129);
+	border-radius: 50%;
+}
+
+.glassBack {
+	width: 40px;
+	height: 40px;
+	background: var(--glassbg);
+	border-radius: 30px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(10.3px);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	gap: 10px;
 }
 
 input {
@@ -206,10 +239,10 @@ button:hover {
 	width: clamp(18rem, 50vw, 60rem);
 	text-align: center;
 	border-radius: 30px;
-	height: 7vh;
+	height: 10vh;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-top: 25px;
+	padding-top: 10px;
 	padding-bottom: 10px;
 	overflow: auto;
 	-ms-overflow-style: none;
@@ -329,10 +362,13 @@ pre {
 	width: 6vh;
 	height: 6vh;
 	font-size: 2vw;
-
+	box-sizing: border-box;
 	text-decoration: none;
 	color: var(--text);
 	transition: 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .simple:hover {
 	width: 7vh;
@@ -340,6 +376,18 @@ pre {
 	transition: 0.2s;
 	color: rgb(240, 137, 129);
 	padding: 5px;
+}
+
+.slider {
+	width: clamp(15rem, 20vw, 30rem);
+	padding: 0;
+	appearance: none;
+	-webkit-appearance: none;
+	outline: none;
+	border: none;
+	height: 10px;
+
+	background: rgb(56, 56, 56);
 }
 
 @keyframes pop {
@@ -484,5 +532,19 @@ pre {
 }
 
 .scrollDiv {
-	height: 7vh;
+	height: 10vh;
+}
+
+select {
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	width: clamp(15rem, 20vw, 30rem);
+	text-align: center;
+	background: rgb(56, 56, 56);
+	color: white;
+}
+
+img {
+	border-radius: 40px;
 }
