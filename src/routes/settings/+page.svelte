@@ -71,7 +71,7 @@
 	<p>Choose a model</p>
 	<select bind:value={model}>
 		<option value="openai/gpt-oss-120b"> GPT-OSS-120B </option>
-		<option value="groq/compound"> Test </option>
+
 		<option value="llama-3.1-8b-instant"> Llama 3.1 8B </option>
 		<option value="llama-3.3-70b-versatile"> LLama 3.3 70B </option>
 	</select>
