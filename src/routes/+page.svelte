@@ -174,7 +174,7 @@
 <!--This documentElement was courtesy of Claude. -->
 <svelte:head>
 	<title>LurnAI</title>
-	<meta property="og:image" content="LurnAI.png" />
+	<meta property="og:image" content="https://lurn.capydesigns.com/LurnAI.png" />
 	<script>
 		if (localStorage.getItem('dark') === 'true') {
 			document.documentElement.classList.toggle('dark');
