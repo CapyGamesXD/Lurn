@@ -23,6 +23,6 @@
 	<h1>Welcome to Lurn</h1>
 	<p>Looks like you're new here! Please enter your desired username</p>
 	<div class="divider"></div>
-	<input placeholder="e.g, CapyBara" bind:value={userInput} />
+	<input maxlength="20" placeholder="e.g, CapyBara" bind:value={userInput} />
 	<button onclick={save}>Save</button>
 </div>
