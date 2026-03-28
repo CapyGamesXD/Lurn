@@ -76,7 +76,7 @@
 	<div class="divider"></div>
 	<p>Choose a model</p>
 	<select bind:value={model}>
-		<option value="openai/gpt-oss-120b"> GPT-OSS-120B </option>
+		<option value="openai/gpt-oss-120b"> GPT-OSS-120B (function capable) </option>
 
 		<option value="llama-3.1-8b-instant"> Llama 3.1 8B </option>
 		<option value="llama-3.3-70b-versatile"> LLama 3.3 70B </option>
@@ -88,5 +88,5 @@
 	<div class="divider"></div>
 	<p>Context Window:</p>
 	<input type="range" class="slider" min="2" max="30" bind:value={window} />
-	<p>{window} <br /> Default: 15</p>
+	<p>{window} <br /> Default: 16</p>
 </div>

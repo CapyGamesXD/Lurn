@@ -21,8 +21,8 @@
 	let image = $state('');
 	let imageQuery = $state('');
 	let ready = false;
-	let window = 16;
-	onMount(() => {
+	let contWindow = 16;
+	onMount(async () => {
 		messages = JSON.parse(localStorage.getItem('messages')) || [];
 		displayMessages = JSON.parse(localStorage.getItem('displayMessages')) || [];
 		temp = localStorage.getItem('temp') || 0.6;
@@ -30,12 +30,15 @@
 		user = localStorage.getItem('username') || '';
 		darkMode = localStorage.getItem('dark') === 'true';
 		model = localStorage.getItem('model') || 'openai/gpt-oss-120b';
-		window = localStorage.getItem('window') || 16;
+		contWindow = localStorage.getItem('window') || 16;
 
 		if (user == '') {
 			goto('/welcome');
 		}
 		ready = true;
+		requestAnimationFrame(() => {
+			theySeeMeScrolling();
+		});
 	});
 	const options = {
 		throwOnError: false,
@@ -44,10 +47,17 @@
 	function clearImage() {
 		image = '';
 		question = '';
+
+		requestAnimationFrame(() => {
+			theySeeMeScrolling();
+		});
 	}
 
 	const theySeeMeScrolling = () => {
-		scrollDiv?.scrollIntoView({ behavior: 'smooth' });
+		window.scrollTo({
+			top: document.body.scrollHeight,
+			behavior: 'smooth'
+		});
 	};
 	marked.use(markedKatex(options));
 
@@ -67,7 +77,7 @@
 	async function send() {
 		if (input) {
 			displayMessages = [...displayMessages, { role: 'user', content: input }];
-			if (messages.length <= window) {
+			if (messages.length <= contWindow) {
 				messages = [...messages, { role: 'user', content: input }];
 			} else {
 				messages.shift();
