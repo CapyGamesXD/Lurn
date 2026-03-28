@@ -19,6 +19,24 @@ a {
 	margin: 0 auto;
 	padding: 0;
 }
+
+.fancyLink {
+	outline: none;
+	border: none;
+	background-color: rgb(240, 137, 129);
+	color: white;
+
+	font-size: clamp(1rem, 1.5vw, 2rem);
+	width: clamp(10rem, 20vw, 30rem);
+	text-align: center;
+	border-radius: 30vw;
+	height: clamp(3rem, 8vh, 12rem);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+
 * {
 	margin: 0;
 

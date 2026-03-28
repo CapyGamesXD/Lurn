@@ -80,4 +80,5 @@
 	<input type="range" class="slider" min="0" max="10" bind:value={temp} />
 	<p>{(temp / 10).toPrecision(1)} <br /> Default: ~0.6</p>
 	<div class="divider"></div>
+	<a class="fancyLink" href="about">About Lurn</a>
 </div>
