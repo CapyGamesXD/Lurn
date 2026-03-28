@@ -1,32 +1,15 @@
 <script>
 	//@ts-nocheck
-
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-
-	let temp = $state(6);
-	let model = $state('openai/gpt-oss-120b');
 	let darkMode;
 	onMount(() => {
-		temp = localStorage.getItem('temp') == null ? 6 : localStorage.getItem('temp') * 10;
-		model = localStorage.getItem('model');
 		darkMode = localStorage.getItem('dark') === 'true';
 		console.log(darkMode);
-		console.log(model);
-		console.log('saved as', localStorage.getItem('temp'));
 	});
-
-	function home() {
-		localStorage.setItem('temp', (temp / 10).toPrecision(1).toString());
-		localStorage.setItem('model', model);
-		console.log(localStorage.getItem('temp'));
-		goto('/');
-	}
 
 	$effect(() => {
 		document.documentElement.classList.toggle('dark', darkMode);
 		document.body.classList.toggle('dark', darkMode);
-		localStorage.setItem('dark', darkMode);
 	});
 </script>
 
@@ -46,7 +29,7 @@
 
 <div class="centerdiv">
 	<div class="glassBack">
-		<button onclick={home} class="simple" aria-label="Home button">
+		<a href="/" class="simple" aria-label="Home button">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
@@ -62,23 +45,28 @@
 					d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
 				/></svg
 			>
-		</button>
+		</a>
 	</div>
 
-	<h1>AI Settings:</h1>
+	<h1>What it is:</h1>
 
-	<div class="divider"></div>
-	<p>Choose a model</p>
-	<select bind:value={model}>
-		<option value="openai/gpt-oss-120b"> GPT-OSS-120B </option>
+	<p>
+		Lurn is a project I made to help others and me study more effectively! <br /> I found that
+		staring at a textbook for hours wasn't effective for me, so I made this! It's an AI tool that
+		teaches you in a way that you can learn. <br />If you face any server-side issues, it might be
+		caused by excessive traffic for my API key, as it's a free tier. :( I'd just like to say
+		(because I think a lot of people have doubts), I did NOT use AI to write this summary. I wrote
+		it all myself, so sorry if there are any typos! (I kinda yapped, so sorry about that too.)
+	</p>
 
-		<option value="llama-3.1-8b-instant"> Llama 3.1 8B </option>
-		<option value="llama-3.3-70b-versatile"> LLama 3.3 70B </option>
-	</select>
+	<h1>Secret features:</h1>
 	<div class="divider"></div>
-	<p>Temperature:</p>
-	<input type="range" class="slider" min="0" max="10" bind:value={temp} />
-	<p>{(temp / 10).toPrecision(1)} <br /> Default: ~0.6</p>
+
+	<p>
+		Lurn has two "special" features, being its quiz and image function! Ask the AI to give you a
+		quiz or question, or an image and it'll open in a new UI! Disclaimer: this might not work as
+		well when using the smaller models available due to their inherent 'disobedience' (i.e, they're
+		a bit stupid...)
+	</p>
 	<div class="divider"></div>
-	<a class="fancyLink" href="about">About Lurn</a>
 </div>
