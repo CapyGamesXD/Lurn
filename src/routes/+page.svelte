@@ -10,6 +10,7 @@
 
 	let user = $state('');
 	let messages = $state([]);
+	let displayMessages = $state([]);
 	let input = $state('');
 	let question = $state('');
 
@@ -19,16 +20,22 @@
 	let model = $state('');
 	let image = $state('');
 	let imageQuery = $state('');
+	let ready = false;
+	let window = 16;
 	onMount(() => {
+		messages = JSON.parse(localStorage.getItem('messages')) || [];
+		displayMessages = JSON.parse(localStorage.getItem('displayMessages')) || [];
 		temp = localStorage.getItem('temp') || 0.6;
 		console.log('The temperature is currently:', temp);
 		user = localStorage.getItem('username') || '';
 		darkMode = localStorage.getItem('dark') === 'true';
 		model = localStorage.getItem('model') || 'openai/gpt-oss-120b';
+		window = localStorage.getItem('window') || 16;
 
 		if (user == '') {
 			goto('/welcome');
 		}
+		ready = true;
 	});
 	const options = {
 		throwOnError: false,
@@ -36,6 +43,7 @@
 	};
 	function clearImage() {
 		image = '';
+		question = '';
 	}
 
 	const theySeeMeScrolling = () => {
@@ -58,7 +66,8 @@
 
 	async function send() {
 		if (input) {
-			if (messages.length <= 10) {
+			displayMessages = [...displayMessages, { role: 'user', content: input }];
+			if (messages.length <= window) {
 				messages = [...messages, { role: 'user', content: input }];
 			} else {
 				messages.shift();
@@ -88,10 +97,18 @@
 				if (parsed.question) {
 					question = parsed.question;
 					messages = [...messages, { role: 'assistant', content: `Question: ${question}` }];
+					displayMessages = [
+						...displayMessages,
+						{ role: 'assistant', content: `Question: ${question}` }
+					];
 					console.log(reply);
 				} else if (parsed.image) {
 					imageQuery = parsed.image;
 					messages = [...messages, { role: 'assistant', content: `Image,  ${imageQuery}` }];
+					displayMessages = [
+						...displayMessages,
+						{ role: 'assistant', content: `Image: ${imageQuery}` }
+					];
 					await fetchImage(imageQuery);
 					console.log(reply);
 				}
@@ -104,6 +121,7 @@
 					messages.shift();
 					messages = [...messages, { role: 'assistant', content: reply }];
 				}
+				displayMessages = [...displayMessages, { role: 'assistant', content: reply }];
 				await tick();
 				theySeeMeScrolling();
 				hljs.highlightAll();
@@ -114,6 +132,7 @@
 
 	function clear() {
 		messages = [];
+		displayMessages = [];
 		input = '';
 		question = '';
 		image = '';
@@ -132,6 +151,13 @@
 		document.documentElement.classList.toggle('dark', darkMode);
 		document.body.classList.toggle('dark', darkMode);
 		localStorage.setItem('dark', darkMode);
+	});
+
+	$effect(() => {
+		if (ready) {
+			localStorage.setItem('messages', JSON.stringify(messages));
+			localStorage.setItem('displayMessages', JSON.stringify(displayMessages));
+		}
 	});
 </script>
 
@@ -249,7 +275,7 @@
 		>
 	</div>
 
-	{#if messages.length == 0 && image == ''}
+	{#if displayMessages.length == 0 && image == ''}
 		<div class="fullcenterdiv">
 			<h1 class="fadeText">Welcome back, {user}</h1>
 			<div class="divider"></div>
@@ -258,7 +284,7 @@
 		</div>
 	{:else if question == '' && image == ''}
 		<div class="messages">
-			{#each messages as msgs}
+			{#each displayMessages as msgs}
 				{#if msgs.role == 'user'}
 					<h2>You:</h2>
 					<p>{@html marked(msgs.content)}</p>
@@ -274,13 +300,27 @@
 	{#if question != '' && image == ''}
 		<div class="fullcenterdiv">
 			<div class="question">
+				<button onclick={clearImage} class="simple" aria-label="Close button for question">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-circle-x-icon lucide-circle-x"
+						><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
+					>
+				</button>
 				<h2>Question:</h2>
 				<p>{@html marked(question)}</p>
 				<div class="divider"></div>
 				<div class="row">
 					<input
 						placeholder="Answer Here"
-						class="userInput"
 						bind:value={input}
 						onkeydown={(e) => e.key === 'Enter' && send()}
 					/>
@@ -307,7 +347,7 @@
 					><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
 				></button
 			>
-			<img src={image} alt="AI selected photo" />
+			<img src={image} alt="AI selected media" />
 		</div>
 	{/if}
 

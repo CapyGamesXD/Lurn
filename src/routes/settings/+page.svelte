@@ -6,10 +6,12 @@
 
 	let temp = $state(6);
 	let model = $state('openai/gpt-oss-120b');
+	let window = $state(16);
 	let darkMode;
 	onMount(() => {
 		temp = localStorage.getItem('temp') == null ? 6 : localStorage.getItem('temp') * 10;
 		model = localStorage.getItem('model');
+		window = localStorage.getItem('window') || 16;
 		darkMode = localStorage.getItem('dark') === 'true';
 		console.log(darkMode);
 		console.log(model);
@@ -19,6 +21,7 @@
 	function home() {
 		localStorage.setItem('temp', (temp / 10).toPrecision(1).toString());
 		localStorage.setItem('model', model);
+		localStorage.setItem('window', window);
 		console.log(localStorage.getItem('temp'));
 		goto('/');
 	}
@@ -68,6 +71,9 @@
 	<h1>AI Settings:</h1>
 
 	<div class="divider"></div>
+	<a class="fancyLink" href="about">About Lurn</a>
+	<p>Below are AI customisation parameters.</p>
+	<div class="divider"></div>
 	<p>Choose a model</p>
 	<select bind:value={model}>
 		<option value="openai/gpt-oss-120b"> GPT-OSS-120B </option>
@@ -80,5 +86,7 @@
 	<input type="range" class="slider" min="0" max="10" bind:value={temp} />
 	<p>{(temp / 10).toPrecision(1)} <br /> Default: ~0.6</p>
 	<div class="divider"></div>
-	<a class="fancyLink" href="about">About Lurn</a>
+	<p>Context Window:</p>
+	<input type="range" class="slider" min="2" max="30" bind:value={window} />
+	<p>{window} <br /> Default: 15</p>
 </div>

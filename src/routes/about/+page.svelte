@@ -51,7 +51,7 @@
 	<h1>What it is:</h1>
 
 	<p>
-		Lurn is a project I made to help others and me study more effectively! <br /> I found that
+		Lurn is a project I made to help myself and others study more effectively! <br /> I found that
 		staring at a textbook for hours wasn't effective for me, so I made this! It's an AI tool that
 		teaches you in a way that you can learn. <br />If you face any server-side issues, it might be
 		caused by excessive traffic for my API key, as it's a free tier. :( I'd just like to say
