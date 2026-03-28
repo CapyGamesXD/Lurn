@@ -1,6 +1,5 @@
 # Lurn
 
-Lurn is a simple AI app designed to reduce distractions. It's made to help with studying and learning.
-Lurn is made with simplicity, without limits in mind. You _can_ jump in and learn, or customise the AI to your likings!
+Lurn is an AI learning app I made to help myself and others study! It's made with cramming in mind; no account drama, just username and jump in!
 
-The UI is sleek, elegant and simple, with some fun animations.
+It has unique features that improve the user learning experience. It can ask questions and show images!
