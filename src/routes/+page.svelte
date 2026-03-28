@@ -173,6 +173,8 @@
 
 <!--This documentElement was courtesy of Claude. -->
 <svelte:head>
+	<title>LurnAI</title>
+	<meta property="og:image" content="LurnAI.png" />
 	<script>
 		if (localStorage.getItem('dark') === 'true') {
 			document.documentElement.classList.toggle('dark');
