@@ -22,6 +22,7 @@
 	let imageQuery = $state('');
 	let ready = false;
 	let contWindow = 16;
+	let loading = $state(false);
 	onMount(async () => {
 		messages = JSON.parse(localStorage.getItem('messages')) || [];
 		displayMessages = JSON.parse(localStorage.getItem('displayMessages')) || [];
@@ -75,6 +76,8 @@
 	}
 
 	async function send() {
+		loading = true;
+		console.log('loading, ', loading);
 		if (input) {
 			displayMessages = [...displayMessages, { role: 'user', content: input }];
 			if (messages.length <= contWindow) {
@@ -137,6 +140,9 @@
 				hljs.highlightAll();
 				console.log(reply);
 			}
+
+			loading = false;
+			console.log(loading);
 		}
 	}
 
@@ -306,6 +312,9 @@
 					<p>{@html marked(msgs.content)}</p>
 				{/if}
 			{/each}
+			{#if loading == true}
+				<p>LOADINGGG!</p>
+			{/if}
 		</div>
 
 		<div class="scrollDiv" bind:this={scrollDiv}></div>
