@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	let temp = $state(6);
-	let model = $state('qwen/qwen3-32b');
+	let model = $state('openai/gpt-oss-120b');
 	let window = $state(16);
 	let darkMode;
 	onMount(() => {
@@ -78,9 +78,8 @@
 	<select bind:value={model}>
 		<option value="openai/gpt-oss-120b"> GPT-OSS-120B (function capable) </option>
 
-		<option value="google/gemini-2.5-flash"> Gemini-2.5-Flash </option>
-
-		<option value="qwen/qwen3-32b"> Qwen-32B </option>
+		<option value="llama-3.1-8b-instant"> Llama 3.1 8B </option>
+		<option value="llama-3.3-70b-versatile"> LLama 3.3 70B </option>
 	</select>
 	<div class="divider"></div>
 	<p>Temperature:</p>
