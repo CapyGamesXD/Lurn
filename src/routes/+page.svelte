@@ -313,7 +313,7 @@
 				{/if}
 			{/each}
 			{#if loading == true}
-				<p>LOADING!</p>
+				<p>Loading...</p>
 			{/if}
 		</div>
 
