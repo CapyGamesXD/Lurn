@@ -76,9 +76,9 @@
 	<div class="divider"></div>
 	<p>Choose a model</p>
 	<select bind:value={model}>
-		<option value="google/gemini-2.5-flash"> Gemini-2.5-Flash (recommended) </option>
-
 		<option value="openai/gpt-oss-120b"> GPT-OSS-120B (function capable) </option>
+
+		<option value="google/gemini-2.5-flash"> Gemini-2.5-Flash </option>
 
 		<option value="qwen/qwen3-32b"> Qwen-32B </option>
 	</select>

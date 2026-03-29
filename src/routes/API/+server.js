@@ -8,6 +8,10 @@ const client = new OpenRouter({
 	serverURL: 'https://ai.hackclub.com/proxy/v1'
 });
 
+const groq = new groq({
+	apiKey: groqKey
+});
+
 let prompt;
 export async function POST({ request }) {
 	const { messages, user, temp, model } = await request.json();
