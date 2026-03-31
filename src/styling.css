@@ -39,7 +39,6 @@ a {
 
 * {
 	margin: 0;
-
 	font-family: 'Nunito', sans-serif;
 }
 
@@ -234,11 +233,12 @@ button {
 	border-radius: 30vw;
 	height: clamp(3rem, 8vh, 12rem);
 }
-button:hover {
-	transform: scale(1.05);
-	transition: 0.2s;
+@media (hover: hover) {
+	button:hover {
+		transform: scale(1.05);
+		transition: 0.2s;
+	}
 }
-
 .divider {
 	width: clamp(10rem, 20vw, 25rem);
 	height: 3px;
@@ -254,7 +254,7 @@ button:hover {
 	color: white;
 
 	font-size: clamp(1.5rem, 2vw, 2.5rem);
-	width: clamp(18rem, 50vw, 60rem);
+	width: clamp(16rem, 53vw, 60rem);
 	text-align: center;
 	border-radius: 30px;
 	height: 10vh;
@@ -289,18 +289,18 @@ button:hover {
 	justify-content: center;
 	flex-direction: row;
 	text-decoration: none;
-	color: #000;
-	transition: 0.2s;
+	color: #ffffff;
+	transition: 0.1s;
 }
+@media (hover: hover) {
+	.plus:hover {
+		width: 7vh;
+		height: 7vh;
+		transition: 0.2s;
 
-.plus:hover {
-	width: 7vh;
-	height: 7vh;
-	transition: 0.2s;
-
-	padding: 5px;
+		padding: 5px;
+	}
 }
-
 h2 {
 	font-size: clamp(1.5rem, 2vw, 3rem);
 	font-weight: 700;
@@ -343,13 +343,13 @@ pre {
 .scaryButton {
 	transition: 0.2s;
 }
-
-.scaryButton:hover {
-	background-color: rgb(255, 255, 255);
-	color: black;
-	transition: 0.2s;
+@media (hover: hover) {
+	.scaryButton:hover {
+		background-color: rgb(255, 255, 255);
+		color: black;
+		transition: 0.2s;
+	}
 }
-
 .top {
 	position: fixed;
 	top: 4vh;
@@ -388,14 +388,15 @@ pre {
 	align-items: center;
 	justify-content: center;
 }
-.simple:hover {
-	width: 7vh;
-	height: 7vh;
-	transition: 0.2s;
-	color: rgb(240, 137, 129);
-	padding: 5px;
+@media (hover: hover) {
+	.simple:hover {
+		width: 7vh;
+		height: 7vh;
+		transition: 0.2s;
+		color: rgb(240, 137, 129);
+		padding: 5px;
+	}
 }
-
 .slider {
 	width: clamp(15rem, 20vw, 30rem);
 	padding: 0;
@@ -569,4 +570,50 @@ img {
 
 	max-width: 80vw;
 	height: auto;
+}
+
+.loading {
+	animation:
+		fadeIn 0.4s ease-in-out,
+		loadingIcon 1s infinite ease-in-out;
+	background-color: rgb(99, 157, 188);
+	height: 20px;
+	width: 20px;
+	margin-bottom: 20px;
+	border-radius: 50%;
+}
+
+.loadingAlt {
+	animation:
+		fadeIn 0.4s ease-in-out,
+		loadingAlt 1s infinite ease-in-out;
+	background-color: rgb(240, 137, 129);
+	height: 20px;
+	width: 20px;
+
+	border-radius: 50%;
+}
+
+@keyframes loadingIcon {
+	0% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(10px);
+	}
+	100% {
+		transform: translateY(0px);
+	}
+}
+
+@keyframes loadingAlt {
+	0% {
+		transform: translateY(10px);
+	}
+	50% {
+		transform: translateY(0px);
+	}
+	100% {
+		transform: translateY(10px);
+	}
 }
