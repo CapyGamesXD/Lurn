@@ -35,7 +35,7 @@ export async function POST({ request }) {
 		return json(
 			{
 				reply:
-					"Sorry, we're experiencing server-side issues right now. Please try another model in settings, or try again later."
+					"Sorry, we're experiencing server-related issues right now. Please try another model in settings, check your network connection or try again later."
 			},
 			{ status: 201 }
 		);

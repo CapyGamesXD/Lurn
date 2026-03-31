@@ -23,6 +23,7 @@
 	let ready = false;
 	let contWindow = 16;
 	let loading = $state(false);
+	let siteloaded = $state(false);
 	onMount(async () => {
 		messages = JSON.parse(localStorage.getItem('messages')) || [];
 		displayMessages = JSON.parse(localStorage.getItem('displayMessages')) || [];
@@ -32,7 +33,7 @@
 		darkMode = localStorage.getItem('dark') === 'true';
 		model = localStorage.getItem('model') || 'openai/gpt-oss-120b';
 		contWindow = localStorage.getItem('window') || 16;
-
+		console.log(contWindow);
 		if (user == '') {
 			goto('/welcome');
 		}
@@ -40,6 +41,7 @@
 		requestAnimationFrame(() => {
 			theySeeMeScrolling();
 		});
+		siteloaded = true;
 	});
 	const options = {
 		throwOnError: false,
@@ -76,15 +78,18 @@
 	}
 
 	async function send() {
-		loading = true;
-		console.log('loading, ', loading);
 		if (input) {
-			displayMessages = [...displayMessages, { role: 'user', content: input }];
-			if (messages.length <= contWindow) {
-				messages = [...messages, { role: 'user', content: input }];
+			loading = true;
+			const userSaid = await input;
+
+			console.log('loading, ', loading);
+			input = '';
+			displayMessages = [...displayMessages, { role: 'user', content: userSaid }];
+			if (messages.length < contWindow) {
+				messages = [...messages, { role: 'user', content: userSaid }];
 			} else {
 				messages.shift();
-				messages = [...messages, { role: 'user', content: input }];
+				messages = [...messages, { role: 'user', content: userSaid }];
 			}
 
 			await tick();
@@ -98,7 +103,7 @@
 					'Content-Type': 'application/json'
 				}
 			});
-			input = '';
+
 			question = '';
 			image = '';
 			const data = await response.json();
@@ -203,126 +208,168 @@
 	rel="stylesheet"
 />
 
-<div class="centerdiv">
-	<div id="confirm" popover>
-		<p>Are you sure you want to delete this chat?</p>
-		<div class="divider"></div>
-		<button popovertarget="confirm" popovertargetaction="hide" onclick={clear} class="scaryButton"
-			>Delete</button
-		>
-		<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
-	</div>
-
-	<div id="restart" popover>
-		<p>Are you sure you want to restart setup?</p>
-		<div class="divider"></div>
-		<button popovertarget="restart" popovertargetaction="hide" onclick={restart} class="scaryButton"
-			>Restart</button
-		>
-		<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
-	</div>
-
-	<div class="glass">
-		<button class="simple" aria-label="restart button" popovertarget="restart"
-			><svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"
-				><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg
-			></button
-		>
-
-		<button class="simple" aria-label="clear button" popovertarget="confirm"
-			><svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="lucide lucide-trash-icon lucide-trash"
-				><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path
-					d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-				/></svg
-			></button
-		>
-
-		<button class="simple" onclick={toggle} aria-label="Dark mode toggle"
-			><svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="lucide lucide-moon-icon lucide-moon"
-				><path
-					d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
-				/></svg
-			></button
-		>
-
-		<a class="simple" aria-label="Settings Button" href="/settings"
-			><svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="lucide lucide-settings-icon lucide-settings"
-				><path
-					d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
-				/><circle cx="12" cy="12" r="3" /></svg
-			></a
-		>
-	</div>
-
-	{#if displayMessages.length == 0 && image == ''}
-		<div class="fullcenterdiv">
-			<h1 class="fadeText">Welcome back, {user}</h1>
+{#if siteloaded}
+	<div class="centerdiv">
+		<div id="confirm" popover>
+			<p>Are you sure you want to delete this chat?</p>
 			<div class="divider"></div>
-
-			<p class="fadeText">Ready to dive in?</p>
+			<button popovertarget="confirm" popovertargetaction="hide" onclick={clear} class="scaryButton"
+				>Delete</button
+			>
+			<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
 		</div>
-	{:else if question == '' && image == ''}
-		<div class="messages">
-			{#each displayMessages as msgs}
-				{#if msgs.role == 'user'}
-					<h2>You:</h2>
-					<p>{@html marked(msgs.content)}</p>
-				{:else if msgs.role == 'assistant'}
-					<h2>Assistant:</h2>
-					<p>{@html marked(msgs.content)}</p>
+
+		<div id="restart" popover>
+			<p>Are you sure you want to restart setup?</p>
+			<div class="divider"></div>
+			<button
+				popovertarget="restart"
+				popovertargetaction="hide"
+				onclick={restart}
+				class="scaryButton">Restart</button
+			>
+			<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
+		</div>
+
+		<div class="glass">
+			<button class="simple" aria-label="restart button" popovertarget="restart"
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"
+					><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg
+				></button
+			>
+
+			<button class="simple" aria-label="clear button" popovertarget="confirm"
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-trash-icon lucide-trash"
+					><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path
+						d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+					/></svg
+				></button
+			>
+
+			<button class="simple" onclick={toggle} aria-label="Dark mode toggle"
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-moon-icon lucide-moon"
+					><path
+						d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+					/></svg
+				></button
+			>
+
+			<a class="simple" aria-label="Settings Button" href="/settings"
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-settings-icon lucide-settings"
+					><path
+						d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+					/><circle cx="12" cy="12" r="3" /></svg
+				></a
+			>
+		</div>
+
+		{#if displayMessages.length == 0 && image == ''}
+			<div class="fullcenterdiv">
+				<h1 class="fadeText">Welcome back, {user}</h1>
+				<div class="divider"></div>
+
+				<p class="fadeText">Ready to dive in?</p>
+			</div>
+		{:else if question == '' && image == ''}
+			<div class="messages">
+				{#each displayMessages as msgs}
+					{#if msgs.role == 'user'}
+						<h2>You:</h2>
+						<p>{@html marked(msgs.content)}</p>
+					{:else if msgs.role == 'assistant'}
+						<h2>Assistant:</h2>
+						<p>{@html marked(msgs.content)}</p>
+					{/if}
+				{/each}
+
+				{#if loading == true}
+					<div class="row">
+						<div class="loading"></div>
+						<div class="loadingAlt"></div>
+						<div class="loading"></div>
+					</div>
 				{/if}
-			{/each}
-			{#if loading == true}
-				<p>Loading...</p>
-			{/if}
-		</div>
+			</div>
 
-		<div class="scrollDiv" bind:this={scrollDiv}></div>
-	{/if}
-	{#if question != '' && image == ''}
-		<div class="fullcenterdiv">
-			<div class="question">
-				<button onclick={clearImage} class="simple" aria-label="Close button for question">
+			<div class="scrollDiv" bind:this={scrollDiv}></div>
+		{/if}
+		{#if question != '' && image == ''}
+			<div class="fullcenterdiv">
+				<div class="question">
+					<button onclick={clearImage} class="simple" aria-label="Close button for question">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="lucide lucide-circle-x-icon lucide-circle-x"
+							><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
+						>
+					</button>
+					<h2>Question:</h2>
+					<p>{@html marked(question)}</p>
+					<div class="divider"></div>
+
+					<div class="row">
+						<input
+							placeholder="Answer Here"
+							bind:value={input}
+							onkeydown={(e) => e.key === 'Enter' && send()}
+						/>
+						<button class="plus" aria-label="Send Button" onclick={send}></button>
+					</div>
+				</div>
+			</div>
+		{/if}
+
+		{#if image != ''}
+			<div class="messages">
+				<button onclick={clearImage} aria-label="Close button for image">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
@@ -335,68 +382,47 @@
 						stroke-linejoin="round"
 						class="lucide lucide-circle-x-icon lucide-circle-x"
 						><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
-					>
-				</button>
-				<h2>Question:</h2>
-				<p>{@html marked(question)}</p>
-				<div class="divider"></div>
-				<div class="row">
-					<input
-						placeholder="Answer Here"
-						bind:value={input}
-						onkeydown={(e) => e.key === 'Enter' && send()}
-					/>
-					<button class="plus" aria-label="Send Button" onclick={send}></button>
-				</div>
+					></button
+				>
+				<img src={image} alt="AI selected media" />
 			</div>
-		</div>
-	{/if}
+		{/if}
 
-	{#if image != ''}
-		<div class="messages">
-			<button onclick={clearImage} aria-label="Close button for image">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="lucide lucide-circle-x-icon lucide-circle-x"
-					><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
-				></button
-			>
-			<img src={image} alt="AI selected media" />
-		</div>
-	{/if}
+		{#if question == ''}
+			<div class="bottom">
+				<textarea
+					class="userInput"
+					placeholder="Teach me about capybaras!"
+					bind:value={input}
+					onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
+				></textarea>
 
-	{#if question == ''}
-		<div class="bottom">
-			<textarea
-				class="userInput"
-				placeholder="Teach me about capybaras!"
-				bind:value={input}
-				onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
-			></textarea>
-
-			<button class="plus" aria-label="Send Button" onclick={send}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="lucide lucide-arrow-up-icon lucide-arrow-up"
-					><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg
-				></button
-			>
+				<button class="plus" aria-label="Send Button" onclick={send}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-arrow-up-icon lucide-arrow-up"
+						><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg
+					></button
+				>
+			</div>
+		{/if}
+	</div>
+{:else}
+	<div class="fullcenterdiv">
+		<div class="row">
+			<div class="loading"></div>
+			<div class="loadingAlt"></div>
+			<div class="loading"></div>
 		</div>
-	{/if}
-</div>
+
+		<p>Fetching user data.</p>
+	</div>
+{/if}
