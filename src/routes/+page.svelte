@@ -17,7 +17,7 @@
 	let scrollDiv = $state();
 	let darkMode = $state(false);
 	let temp = $state(Number(0.6));
-	let model = $state('');
+	let model = $state('openai/gpt-oss-120b');
 	let image = $state('');
 	let imageQuery = $state('');
 	let ready = false;
@@ -81,9 +81,8 @@
 		if (input) {
 			loading = true;
 			const userSaid = await input;
-
-			console.log('loading, ', loading);
 			input = '';
+			input.replaceAll(' ', '');
 			displayMessages = [...displayMessages, { role: 'user', content: userSaid }];
 			if (messages.length < contWindow) {
 				messages = [...messages, { role: 'user', content: userSaid }];
@@ -106,9 +105,9 @@
 
 			question = '';
 			image = '';
+
 			const data = await response.json();
 			let reply = data.reply;
-			console.log(reply);
 
 			try {
 				const parsed = JSON.parse(reply);
@@ -119,7 +118,6 @@
 						...displayMessages,
 						{ role: 'assistant', content: `Question: ${question}` }
 					];
-					console.log(reply);
 				} else if (parsed.image) {
 					imageQuery = parsed.image;
 					messages = [...messages, { role: 'assistant', content: `Image,  ${imageQuery}` }];
@@ -128,7 +126,6 @@
 						{ role: 'assistant', content: `Image: ${imageQuery}` }
 					];
 					await fetchImage(imageQuery);
-					console.log(reply);
 				}
 			} catch {
 				console.log('No question!');
@@ -140,14 +137,13 @@
 					messages = [...messages, { role: 'assistant', content: reply }];
 				}
 				displayMessages = [...displayMessages, { role: 'assistant', content: reply }];
+
 				await tick();
 				theySeeMeScrolling();
 				hljs.highlightAll();
-				console.log(reply);
 			}
 
 			loading = false;
-			console.log(loading);
 		}
 	}
 
@@ -356,11 +352,7 @@
 					<div class="divider"></div>
 
 					<div class="row">
-						<input
-							placeholder="Answer Here"
-							bind:value={input}
-							onkeydown={(e) => e.key === 'Enter' && send()}
-						/>
+						<input placeholder="Answer Here" bind:value={input} onkeydown={enterDetect} />
 						<button class="plus" aria-label="Send Button" onclick={send}></button>
 					</div>
 				</div>
@@ -394,7 +386,12 @@
 					class="userInput"
 					placeholder="Teach me about capybaras!"
 					bind:value={input}
-					onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' && e != 'shiftKey') {
+							e.preventDefault();
+							send();
+						}
+					}}
 				></textarea>
 
 				<button class="plus" aria-label="Send Button" onclick={send}>
