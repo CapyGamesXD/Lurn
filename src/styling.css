@@ -25,7 +25,7 @@ a {
 	border: none;
 	background-color: rgb(240, 137, 129);
 	color: white;
-
+	margin-bottom: 20px;
 	font-size: clamp(1rem, 1.5vw, 2rem);
 	width: clamp(10rem, 20vw, 30rem);
 	text-align: center;
