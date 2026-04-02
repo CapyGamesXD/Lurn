@@ -10,7 +10,7 @@
 	let darkMode;
 	onMount(() => {
 		temp = localStorage.getItem('temp') == null ? 6 : localStorage.getItem('temp') * 10;
-		model = localStorage.getItem('model');
+		model = localStorage.getItem('model') || 'openai/gpt-oss-120b';
 		window = localStorage.getItem('window') || 16;
 		darkMode = localStorage.getItem('dark') === 'true';
 		console.log(darkMode);
@@ -71,9 +71,6 @@
 	<h1>AI Settings:</h1>
 
 	<div class="divider"></div>
-	<a class="fancyLink" href="about">About Lurn</a>
-	<p>Below are AI customisation parameters.</p>
-	<div class="divider"></div>
 	<p>Choose a model</p>
 	<select bind:value={model}>
 		<option value="openai/gpt-oss-120b"> GPT-OSS-120B (function capable) </option>
@@ -82,6 +79,7 @@
 		<option value="llama-3.3-70b-versatile"> LLama 3.3 70B </option>
 	</select>
 	<div class="divider"></div>
+	<h1>Advanced:</h1>
 	<p>Temperature:</p>
 	<input type="range" class="slider" min="0" max="10" bind:value={temp} />
 	<p>{(temp / 10).toPrecision(1)} <br /> Default: ~0.6</p>
@@ -89,4 +87,6 @@
 	<p>Context Window:</p>
 	<input type="range" class="slider" min="2" max="30" bind:value={window} />
 	<p>{window} <br /> Default: 16</p>
+	<div class="divider"></div>
+	<a class="fancyLink" href="about">About Lurn</a>
 </div>

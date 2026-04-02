@@ -24,6 +24,7 @@
 	let contWindow = 16;
 	let loading = $state(false);
 	let siteloaded = $state(false);
+	let right = $state(true);
 	onMount(async () => {
 		messages = JSON.parse(localStorage.getItem('messages')) || [];
 		displayMessages = JSON.parse(localStorage.getItem('displayMessages')) || [];
@@ -316,6 +317,7 @@
 						<h2>Assistant:</h2>
 						<p>{@html marked(msgs.content)}</p>
 					{/if}
+					<div class="divider"></div>
 				{/each}
 
 				{#if loading == true}
@@ -352,7 +354,7 @@
 					<div class="divider"></div>
 
 					<div class="row">
-						<input placeholder="Answer Here" bind:value={input} onkeydown={enterDetect} />
+						<input placeholder="Answer Here" bind:value={input} />
 						<button class="plus" aria-label="Send Button" onclick={send}></button>
 					</div>
 				</div>
@@ -387,7 +389,7 @@
 					placeholder="Teach me about capybaras!"
 					bind:value={input}
 					onkeydown={(e) => {
-						if (e.key === 'Enter' && e != 'shiftKey') {
+						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault();
 							send();
 						}
