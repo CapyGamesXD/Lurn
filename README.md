@@ -4,9 +4,11 @@ Lurn is an AI learning app I made to help myself and others study! It's made wit
 
 It has unique features that improve the user learning experience. It can ask questions and show images!*
 
-<img width="1135" height="781" alt="Screenshot 2026-04-01 at 21 28 50" src="https://github.com/user-attachments/assets/6c6263a0-7cf8-46f7-8906-c15586173591" />
+Home page:
+<img width="1470" height="799" alt="Screenshot 2026-04-02 at 18 35 25" src="https://github.com/user-attachments/assets/eb00deb2-f317-4986-ac58-ba5b6992aee7" />
 
-<img width="313" height="598" alt="Screenshot 2026-04-02 at 18 33 45" src="https://github.com/user-attachments/assets/77d74d70-e5fa-4570-b4cf-b5ca01f05656" />
+Settings menu:
+<img width="1452" height="799" alt="Screenshot 2026-04-02 at 18 36 09" src="https://github.com/user-attachments/assets/8438baa7-5905-4277-b873-55b1f5f45b31" />
 
 Both menus feature light and dark modes! 
 
