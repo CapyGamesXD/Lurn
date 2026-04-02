@@ -10,6 +10,9 @@ Home page:
 Settings menu:
 <img width="1452" height="799" alt="Screenshot 2026-04-02 at 18 36 09" src="https://github.com/user-attachments/assets/8438baa7-5905-4277-b873-55b1f5f45b31" />
 
+It also shows images and questions!
+
+
 Both menus feature light and dark modes! 
 
 *Function capable models only.
