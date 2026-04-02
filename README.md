@@ -12,6 +12,12 @@ Settings menu:
 
 It also shows images and questions!
 
+Original photo [here](https://images.pexels.com/photos/31457818/pexels-photo-31457818.jpeg?auto=compress&cs=tinysrgb&h=350)
+
+
+Question: 
+
+<img width="744" height="612" alt="Screenshot 2026-04-02 at 19 57 17" src="https://github.com/user-attachments/assets/0b22d3a8-665d-4197-aa8c-8bfaaca5c3f0" />
 
 Both menus feature light and dark modes! 
 
