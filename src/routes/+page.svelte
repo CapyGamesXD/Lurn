@@ -177,6 +177,21 @@
 			localStorage.setItem('displayMessages', JSON.stringify(displayMessages));
 		}
 	});
+
+	function closePopup(id) {
+		const element = document.getElementById(id);
+		element.style.animation = 'popBack 0.2s ease-in-out forwards';
+		element.addEventListener(
+			//Below is copied from Claude. Just like being transparent. :D
+			'animationend',
+			() => {
+				element.style.visibility = 'hidden';
+				element.hidePopover();
+				element.style.visibility = '';
+			},
+			{ once: true }
+		);
+	}
 </script>
 
 <!--This documentElement was courtesy of Claude. -->
@@ -213,19 +228,22 @@
 			<button popovertarget="confirm" popovertargetaction="hide" onclick={clear} class="scaryButton"
 				>Delete</button
 			>
-			<button popovertarget="confirm" popovertargetaction="hide">Cancel</button>
+			<button
+				onclick={() => {
+					closePopup('confirm');
+				}}>Cancel</button
+			>
 		</div>
 
 		<div id="restart" popover>
 			<p>Are you sure you want to restart setup?</p>
 			<div class="divider"></div>
+			<button onclick={restart} class="scaryButton">Restart</button>
 			<button
-				popovertarget="restart"
-				popovertargetaction="hide"
-				onclick={restart}
-				class="scaryButton">Restart</button
+				onclick={() => {
+					closePopup('restart');
+				}}>Cancel</button
 			>
-			<button popovertarget="restart" popovertargetaction="hide">Cancel</button>
 		</div>
 
 		<div class="glass">

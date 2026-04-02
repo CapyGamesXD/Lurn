@@ -280,8 +280,8 @@ button {
 }
 
 .plus {
-	width: 6vh;
-	height: 6vh;
+	width: 40px;
+	height: 40px;
 
 	font-size: 2vw;
 	display: flex;
@@ -377,16 +377,17 @@ pre {
 
 .simple {
 	background: none;
-	width: 6vh;
-	height: 6vh;
+	width: 40px;
+	height: 40px;
 	font-size: 2vw;
 	box-sizing: border-box;
 	text-decoration: none;
 	color: var(--text);
 	transition: 0.2s;
-	display: flex;
+
 	align-items: center;
 	justify-content: center;
+	display: inline-flex;
 }
 @media (hover: hover) {
 	.simple:hover {
@@ -437,9 +438,9 @@ pre {
 }
 
 #confirm {
-	animation: popBack 0.2s ease-in-out;
 	transition: 0.2s;
 	transition-behavior: allow-discrete;
+
 	display: none;
 	margin: auto;
 	background: rgba(177, 177, 177, 0.368);
@@ -485,7 +486,6 @@ pre {
 }
 
 #restart {
-	animation: popBack 0.2s ease-in-out;
 	transition: 0.2s;
 	transition-behavior: allow-discrete;
 	display: none;
