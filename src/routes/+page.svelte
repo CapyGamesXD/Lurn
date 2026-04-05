@@ -196,8 +196,8 @@
 
 <!--This documentElement was courtesy of Claude. -->
 <svelte:head>
-	<title>LurnAI</title>
-	<meta property="og:description" content="An AI-powered learning app!" />
+	<title>Lurn</title>
+	<meta property="og:description" content="Lurn is an AI-powered learning app!" />
 	<meta property="og:image" content="https://lurn.capydesigns.com/LurnAI.png" />
 	<script>
 		if (localStorage.getItem('dark') === 'true') {
@@ -323,7 +323,7 @@
 				<h1 class="fadeText">Welcome back, {user}</h1>
 				<div class="divider"></div>
 
-				<p class="fadeText">Ready to dive in?</p>
+				<p class="fadeText">Ready to Lurn?</p>
 			</div>
 		{:else if question == '' && image == ''}
 			<div class="messages">
